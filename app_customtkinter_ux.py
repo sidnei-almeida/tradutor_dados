@@ -640,37 +640,7 @@ class TradutorCustomTkinterUX:
             troughcolor=[('active', self.cores['secondary_hover'])]
         )
         
-        # Botões de exportação na parte inferior
-        export_frame = ctk.CTkFrame(card_frame, fg_color="transparent")
-        export_frame.grid(row=2, column=0, sticky="ew", padx=20, pady=(0, 20))
-        
-        # Botão exportar CSV
-        btn_csv = ctk.CTkButton(
-            export_frame,
-            text="📄 Exportar CSV",
-            font=ctk.CTkFont(size=12),
-            height=36,
-            corner_radius=6,
-            fg_color=self.cores['glass'],
-            hover_color=self.cores['secondary_hover'],
-            text_color=self.cores['text_primary'],
-            command=lambda: self.exportar_resultado('CSV')
-        )
-        btn_csv.pack(side="left", padx=(0, 8), fill="x", expand=True)
-        
-        # Botão exportar Excel
-        btn_excel = ctk.CTkButton(
-            export_frame,
-            text="📊 Exportar Excel",
-            font=ctk.CTkFont(size=12),
-            height=36,
-            corner_radius=6,
-            fg_color=self.cores['glass'],
-            hover_color=self.cores['secondary_hover'],
-            text_color=self.cores['text_primary'],
-            command=lambda: self.exportar_resultado('Excel')
-        )
-        btn_excel.pack(side="left", padx=(8, 0), fill="x", expand=True)
+
     
     def criar_sidebar_direita(self):
         """Cria a sidebar direita focada nos logs de atividades - versão compacta"""
@@ -730,7 +700,48 @@ class TradutorCustomTkinterUX:
             text_color=self.cores['text_primary'],
             command=self.limpar_log
         )
-        btn_limpar.pack(pady=(0, 15))  # Espaçamento equilibrado
+        btn_limpar.pack(pady=(0, 12))  # Reduzir espaçamento
+        
+        # Separador visual
+        separator = ctk.CTkFrame(log_frame, height=1, fg_color=self.cores['border'])
+        separator.pack(fill="x", pady=(0, 8))
+        
+        # Botões de exportação - mais compactos
+        export_label = ctk.CTkLabel(
+            log_frame,
+            text="💾 Exportar Dataset:",
+            font=ctk.CTkFont(size=9, weight="bold"),
+            text_color=self.cores['text_primary']
+        )
+        export_label.pack(anchor="w", pady=(0, 6))
+        
+        # Botão exportar CSV
+        btn_csv = ctk.CTkButton(
+            log_frame,
+            text="📊 Exportar CSV",
+            font=ctk.CTkFont(size=9),
+            height=26,
+            corner_radius=5,
+            fg_color=self.cores['accent'],
+            hover_color=self.cores['accent_hover'],
+            text_color=self.cores['text_primary'],
+            command=lambda: self.exportar_resultado('CSV')
+        )
+        btn_csv.pack(fill="x", pady=(0, 4))
+        
+        # Botão exportar Excel
+        btn_excel = ctk.CTkButton(
+            log_frame,
+            text="📈 Exportar Excel",
+            font=ctk.CTkFont(size=9),
+            height=26,
+            corner_radius=5,
+            fg_color=self.cores['accent'],
+            hover_color=self.cores['accent_hover'],
+            text_color=self.cores['text_primary'],
+            command=lambda: self.exportar_resultado('Excel')
+        )
+        btn_excel.pack(fill="x", pady=(0, 0))
     
     def criar_barra_status(self):
         """Cria a barra de status inferior organizada e responsiva - versão compacta com progresso"""
