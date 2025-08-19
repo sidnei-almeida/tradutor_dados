@@ -5,7 +5,7 @@
 [![Plataformas](https://img.shields.io/badge/Plataformas-Linux%20%7C%20macOS-lightgrey)](https://en.wikipedia.org/wiki/Cross-platform)
 [![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-green)](./LICENSE)
 
-Aplicação desktop minimalista e profissional para traduzir datasets (CSV, Excel, SQLite) com foco em produtividade, estabilidade e UX. Construída em Python com CustomTkinter, oferece um fluxo simples: carregue o dataset, selecione colunas e traduza com um clique.
+Aplicação desktop minimalista para traduzir datasets (CSV, Excel, SQLite) com foco em produtividade, estabilidade e UX. Construída em Python com CustomTkinter, oferece um fluxo simples: carregue o dataset, selecione colunas e traduza com um clique.
 
 > Tema escuro minimalista inspirado em preto e cinzas, com realces sutis em verde para ações e vermelho para estados de atenção.
 
