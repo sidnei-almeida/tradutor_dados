@@ -1,0 +1,100 @@
+{
+  "aplicacao": {
+    "nome": "Tradutor de Dados Universal",
+    "versao": "2.1.0",
+    "autor": "Sistema de Tradução Universal",
+    "descricao": "Sistema moderno para tradução de datasets usando IA"
+  },
+  "interface": {
+    "tema": "dark",
+    "tamanho_padrao": {
+      "largura": 1400,
+      "altura": 900
+    },
+    "tamanho_minimo": {
+      "largura": 1000,
+      "altura": 700
+    },
+    "cores": {
+      "primaria": "#3b82f6",
+      "secundaria": "#4b5563",
+      "sucesso": "#10b981",
+      "erro": "#ef4444",
+      "aviso": "#f59e0b",
+      "info": "#06b6d4",
+      "fundo_principal": "#1f2937",
+      "fundo_secundario": "#374151",
+      "fundo_status": "#111827",
+      "texto_primario": "white",
+      "texto_secundario": "#9ca3af",
+      "borda": "#374151"
+    },
+    "design": {
+      "corner_radius": 12,
+      "corner_radius_pequeno": 8,
+      "corner_radius_minimo": 6,
+      "padding_padrao": 20,
+      "padding_pequeno": 15,
+      "padding_minimo": 10,
+      "espacamento_elementos": 15,
+      "espacamento_pequeno": 10,
+      "espacamento_minimo": 5
+    }
+  },
+  "traducao": {
+    "idiomas_disponiveis": {
+      "en": "🇺🇸 Inglês",
+      "pt": "🇧🇷 Português",
+      "es": "🇪🇸 Espanhol",
+      "fr": "🇫🇷 Francês",
+      "de": "🇩🇪 Alemão",
+      "it": "🇮🇹 Italiano",
+      "ja": "🇯🇵 Japonês",
+      "ko": "🇰🇷 Coreano",
+      "zh": "🇨🇳 Chinês",
+      "ar": "🇸🇦 Árabe",
+      "hi": "🇮🇳 Hindi",
+      "ru": "🇷🇺 Russo"
+    },
+    "configuracoes_padrao": {
+      "idioma_origem": "en",
+      "idioma_destino": "pt",
+      "tamanho_lote": 15,
+      "delay_traducao": 0.3
+    },
+    "limites": {
+      "tamanho_lote_min": 5,
+      "tamanho_lote_max": 50,
+      "delay_min": 0.1,
+      "delay_max": 1.0
+    }
+  },
+  "performance": {
+    "max_linhas_visualizacao": 50,
+    "timeout_traducao": 30,
+    "max_tentativas": 3,
+    "pausa_entre_lotes": true
+  },
+  "exportacao": {
+    "formatos_suportados": ["csv", "excel"],
+    "encoding_padrao": "utf-8",
+    "incluir_timestamp": true,
+    "separador_csv": ","
+  },
+  "logging": {
+    "nivel": "INFO",
+    "max_linhas_log": 1000,
+    "salvar_log_arquivo": false,
+    "arquivo_log": "tradutor.log"
+  },
+  "seguranca": {
+    "verificar_ssl": true,
+    "timeout_conexao": 10,
+    "max_tamanho_arquivo": "100MB"
+  },
+  "atualizacoes": {
+    "verificar_atualizacoes": true,
+    "url_repositorio": "https://github.com/seu-usuario/data_tradutor",
+    "versao_minima_python": "3.8"
+  }
+}

@@ -1,0 +1,21 @@
+id,name,description,category,comment,status,priority
+1,John Smith,Software developer with 5 years of experience in Python and JavaScript,Technology,Great team player and always willing to help others,Active,High
+2,Sarah Johnson,Marketing specialist focused on digital campaigns and social media,Marketing,Excellent communication skills and creative thinking,Active,Medium
+3,Michael Brown,Financial analyst with expertise in risk management and investment strategies,Finance,Detail-oriented and analytical approach to problem solving,Active,High
+4,Emily Davis,UX designer passionate about creating user-friendly interfaces,Design,Innovative design thinking and attention to user experience,Active,Medium
+5,David Wilson,Project manager with strong leadership and organizational skills,Management,Excellent at coordinating teams and meeting deadlines,Active,High
+6,Lisa Anderson,Content writer specializing in technical documentation and user guides,Writing,Clear and concise writing style with technical knowledge,Active,Low
+7,Robert Taylor,Data scientist working with machine learning and statistical analysis,Technology,Strong analytical skills and mathematical background,Active,High
+8,Jennifer Martinez,Human resources specialist focused on employee development,HR,Great interpersonal skills and conflict resolution abilities,Active,Medium
+9,Christopher Lee,Sales representative with proven track record in B2B sales,Sales,Excellent negotiation skills and customer relationship management,Active,High
+10,Amanda White,Graphic designer creating visual content for various media platforms,Design,Creative and artistic with strong technical skills,Active,Medium
+11,James Rodriguez,Software engineer specializing in backend development and databases,Technology,Problem solver with strong coding abilities,Active,High
+12,Michelle Garcia,Business analyst with expertise in process improvement and optimization,Business,Strategic thinking and data-driven decision making,Active,Medium
+13,Daniel Thompson,Quality assurance engineer ensuring software reliability and performance,Technology,Attention to detail and systematic testing approach,Active,Medium
+14,Ashley Clark,Customer service representative providing excellent support and solutions,Support,Patient and empathetic with strong problem-solving skills,Active,Low
+15,Kevin Lewis,Product manager driving product strategy and development roadmap,Management,Strategic vision and excellent stakeholder management,Active,High
+16,Rachel Walker,Research analyst conducting market research and competitive analysis,Research,Analytical mindset with strong research methodology skills,Active,Medium
+17,Thomas Hall,Network administrator maintaining IT infrastructure and security,Technology,Technical expertise and proactive approach to system maintenance,Active,High
+18,Jessica Allen,Event coordinator planning and executing corporate events and conferences,Events,Organizational skills and attention to detail,Active,Medium
+19,Ryan Young,Legal consultant providing legal advice and contract review,Legal,Strong analytical skills and attention to legal details,Active,High
+20,Lauren King,Training specialist developing and delivering employee training programs,Training,Excellent presentation skills and knowledge transfer abilities,Active,Medium
