@@ -429,20 +429,20 @@ class TradutorCustomTkinterUX:
         
         # Configurar grid da área central - altura equilibrada para 18 linhas
         central_frame.grid_columnconfigure(0, weight=1)
-        central_frame.grid_rowconfigure(0, weight=0, minsize=100)  # Card superior ultra-compacto (altura fixa)
-        central_frame.grid_rowconfigure(1, weight=1, minsize=450)  # Card inferior proporcional para 18 linhas
+        central_frame.grid_rowconfigure(0, weight=0, minsize=80)  # Card superior ultra-compacto (altura fixa)
+        central_frame.grid_rowconfigure(1, weight=1, minsize=470)  # Card inferior proporcional para 18 linhas
         
-        # Card superior - Seleção de colunas
+        # Card superior - Seleção de colunas (ultra-compacto)
         self.criar_card_selecao_colunas(central_frame)
         
-        # Card inferior - Preview dos dados (mais próximo do superior)
+        # Card inferior - Preview dos dados (mais espaço)
         self.criar_card_preview_dados(central_frame)
     
     def criar_card_selecao_colunas(self, parent):
         """Cria o card superior para seleção de colunas para traduzir - versão compacta"""
         # Frame principal do card - altura reduzida
         card_frame = ctk.CTkFrame(parent, corner_radius=12, fg_color=self.cores['glass'])
-        card_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10), padx=0)
+        card_frame.grid(row=0, column=0, sticky="ew", pady=(0, 6), padx=0)  # Espaçamento mínimo
         
         # Título do card - mais compacto
         ctk.CTkLabel(
@@ -517,7 +517,7 @@ class TradutorCustomTkinterUX:
         """Cria o card inferior para preview dos dados"""
         # Frame principal do card
         card_frame = ctk.CTkFrame(parent, corner_radius=15, fg_color=self.cores['secondary'])
-        card_frame.grid(row=1, column=0, sticky="nsew", pady=(5, 0), padx=0)  # Reduzir espaçamento superior
+        card_frame.grid(row=1, column=0, sticky="nsew", pady=(2, 0), padx=0)  # Espaçamento mínimo
         
         # Configurar grid do card - altura proporcional para 18 linhas
         card_frame.grid_columnconfigure(0, weight=1)
@@ -709,12 +709,12 @@ class TradutorCustomTkinterUX:
             text_color=self.cores['text_primary']
         ).pack(pady=8)  # Reduzir de 12 para 8
         
-        # Textbox para log - mais compacto
+        # Textbox para log - altura proporcional
         self.textbox_log = ctk.CTkTextbox(
             log_frame,
             font=ctk.CTkFont(size=9, family="Consolas"),  # Reduzir de 11 para 9
             corner_radius=8,  # Reduzir de 10 para 8
-            height=250  # Reduzir de 300 para 250
+            height=350  # Aumentar para 350 para ficar proporcional
         )
         self.textbox_log.pack(fill="both", expand=True, padx=12, pady=(0, 12))  # Reduzir padding
         
@@ -730,7 +730,7 @@ class TradutorCustomTkinterUX:
             text_color=self.cores['text_primary'],
             command=self.limpar_log
         )
-        btn_limpar.pack(pady=(0, 12))  # Reduzir espaçamento
+        btn_limpar.pack(pady=(0, 15))  # Espaçamento equilibrado
     
     def criar_barra_status(self):
         """Cria a barra de status inferior organizada e responsiva - versão compacta com progresso"""
