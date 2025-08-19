@@ -5,17 +5,19 @@
 [![Plataformas](https://img.shields.io/badge/Plataformas-Linux%20%7C%20macOS-lightgrey)](https://en.wikipedia.org/wiki/Cross-platform)
 [![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-green)](./LICENSE)
 
-Aplicação desktop para traduzir datasets (CSV, Excel, SQLite) de forma simples e eficiente. Construída em Python com CustomTkinter, oferece um fluxo direto: carregue o dataset, selecione colunas e traduza com um clique.
+Aplicação desktop minimalista para traduzir datasets (CSV, Excel, SQLite) com foco em produtividade, estabilidade e UX. Construída em Python com CustomTkinter, oferece um fluxo simples: carregue o dataset, selecione colunas e traduza com um clique.
+
+> Tema escuro minimalista inspirado em preto e cinzas, com realces sutis em verde para ações e vermelho para estados de atenção.
 
 ---
 
-## ✨ Funcionalidades
+## ✨ Destaques
 
-- **Interface simples**: layout organizado em 3 colunas (Configurações • Área Central • Logs)
+- **UI/UX profissional**: layout em 3 colunas (Configurações • Área Central • Logs) com hierarquia visual clara
 - **Suporte multi-formato**: CSV, Excel e bancos SQLite (com seleção de tabela)
 - **Tradução eficiente**: processamento em lotes com controle de delay e uso de memória
-- **Tema escuro**: interface com cores escuras para melhor visualização
-- **Logs integrados**: histórico de atividades dentro da aplicação
+- **Tema escuro minimalista**: preto e cinzas com acentos sutis; animações/feedbacks discretos
+- **Logs integrados**: histórico expandido dentro do card de atividades
 - **Execução simplificada**: script `run.sh` configura o ambiente automaticamente
 
 ---
@@ -25,7 +27,7 @@ Aplicação desktop para traduzir datasets (CSV, Excel, SQLite) de forma simples
 Adicione uma captura da interface em `docs/screenshot-dark.png` para aparecer aqui:
 
 ```text
-![Interface da Aplicação](docs/screenshot-dark.png)
+![UI - Tema Escuro Minimalista](docs/screenshot-dark.png)
 ```
 
 ---
@@ -74,18 +76,24 @@ python app_customtkinter_ux.py
 
 ---
 
-## 🎨 Interface
+## 🎨 Tema e Diretrizes de Design
 
-A aplicação usa um tema escuro com:
-- Fundo preto e cinzas escuros
-- Texto em branco e cinza claro
-- Botões em verde para ações principais
-- Botões em vermelho para parar/erros
-- Layout compacto para aproveitar melhor o espaço da tela
+Paleta atual (Dark minimalista):
+
+- **Primária (texto)**: `#ffffff`
+- **Plano de fundo**: `#000000` e tons de cinza `#0f0f0f` / `#1a1a1a`
+- **Acento (ações)**: `#059669` e `#047857` (hover)
+- **Atenção/erro**: `#dc2626` e `#b91c1c` (hover)
+- **Bordas sutis**: `#1a1a1a`
+
+Diretrizes:
+- Títulos enxutos e legíveis, sem subtítulo redundante
+- Componentes compactos (radio buttons e botões com altura equilibrada)
+- Feedback visual discreto ao interagir (hover/press)
 
 ---
 
-## ⚙️ Configurações
+## ⚙️ Configurações Importantes
 
 - **Tamanho do Lote**: controla quantas linhas são processadas por iteração
 - **Delay entre requisições**: evita bloqueios de provedores externos
@@ -100,21 +108,14 @@ Arquivos de configuração:
 ## 🔧 Estrutura do Projeto
 
 ```
-tradutor_dados/
-├── app_customtkinter_ux.py      # Interface principal da aplicação
+data_tradutor/
+├── app_customtkinter_ux.py      # Interface principal (CustomTkinter)
 ├── config/
 │   ├── settings.json            # Configurações da aplicação
 │   └── tradutor.py              # Lógica de tradução/processamento
 ├── requirements.txt             # Dependências Python
-├── run.sh                       # Script de execução para Linux/macOS
-├── run.bat                      # Script de execução para Windows
-├── install.bat                  # Script de instalação para Windows
-├── build.bat                    # Script para gerar executável
-├── manage_venv.sh               # Gerenciamento de ambiente virtual
-├── dados_teste.csv              # Arquivo de exemplo para testes
-├── exemplo_uso.py               # Exemplo de uso da aplicação
-├── tradutor.spec                # Configuração para PyInstaller
-└── README.md                    # Documentação do projeto
+├── run.sh                       # Inicialização e setup automático
+└── README.md                    # Documentação
 ```
 
 ---
