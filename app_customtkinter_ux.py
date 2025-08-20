@@ -13,6 +13,8 @@ import os
 import threading
 import queue
 import time
+import csv
+import shutil
 from datetime import datetime
 from deep_translator import GoogleTranslator
 import json
@@ -49,6 +51,7 @@ class TradutorCustomTkinterUX:
         self.traducao_ativa = False
         self.thread_traducao = None
         self.progress_queue = queue.Queue()
+        self.arquivo_saida = None  # Caminho do arquivo de saída traduzido
         
         # Configurações
         self.config = {
@@ -58,25 +61,25 @@ class TradutorCustomTkinterUX:
             'delay_traducao': 0.3  # Delay menor para melhor responsividade
         }
         
-        # Cores e estilos para efeitos visuais - Tema Minimalista Dark
+        # Cores e estilos para efeitos visuais - Tema Minimalista Dark Elegante
         self.cores = {
-            'primary': '#ffffff',  # Branco puro para elementos principais
-            'primary_hover': '#e5e7eb',  # Cinza muito claro no hover
-            'secondary': '#0f0f0f',  # Preto quase puro para frames secundários
-            'secondary_hover': '#1a1a1a',  # Preto mais claro no hover
-            'accent': '#059669',  # Verde mais escuro e sutil
-            'accent_hover': '#047857',  # Verde ainda mais escuro no hover
-            'warning': '#dc2626',  # Vermelho mais escuro
-            'warning_hover': '#b91c1c',  # Vermelho ainda mais escuro no hover
-            'danger': '#dc2626',
-            'danger_hover': '#b91c1c',
+            'primary': '#e5e7eb',  # Cinza muito claro para elementos principais
+            'primary_hover': '#d1d5db',  # Cinza claro no hover
+            'secondary': '#1f2937',  # Cinza escuro para frames secundários
+            'secondary_hover': '#374151',  # Cinza médio no hover
+            'accent': '#4b5563',  # Cinza neutro para acentos
+            'accent_hover': '#6b7280',  # Cinza médio no hover
+            'warning': '#7f1d1d',  # Vermelho escuro e sutil
+            'warning_hover': '#991b1b',  # Vermelho médio no hover
+            'danger': '#7f1d1d',
+            'danger_hover': '#991b1b',
             'transparent': 'transparent',
-            'semi_transparent': '#000000',  # Preto puro
-            'glass': '#0f0f0f',  # Preto quase puro para frames
-            'text_primary': '#ffffff',  # Texto principal branco
+            'semi_transparent': '#111827',  # Cinza muito escuro
+            'glass': '#1f2937',  # Cinza escuro para frames
+            'text_primary': '#f9fafb',  # Texto principal cinza muito claro
             'text_secondary': '#d1d5db',  # Texto secundário cinza claro
             'text_muted': '#9ca3af',  # Texto mudo cinza médio
-            'border': '#1a1a1a'  # Bordas muito escuras
+            'border': '#374151'  # Bordas cinza médio
         }
         
         # Criar interface
@@ -152,11 +155,11 @@ class TradutorCustomTkinterUX:
         # Título da sidebar - mais compacto
         sidebar_title = ctk.CTkLabel(
             sidebar_frame,
-            text="⚙️ Configurações",
-            font=ctk.CTkFont(size=13, weight="bold"),  # Reduzir de 16 para 13
+            text="Configurações",
+            font=ctk.CTkFont(size=13, weight="bold"),
             text_color=self.cores['text_primary']
         )
-        sidebar_title.pack(pady=8)  # Reduzir de 12 para 8
+        sidebar_title.pack(pady=8)
         
         # Container scrollável para configurações
         config_container = ctk.CTkScrollableFrame(
@@ -186,10 +189,10 @@ class TradutorCustomTkinterUX:
         # Título do frame - mais compacto
         ctk.CTkLabel(
             tipo_frame,
-            text="📋 Tipo de Arquivo",
-            font=ctk.CTkFont(size=11, weight="bold"),  # Reduzir de 14 para 11
+            text="Tipo de Arquivo",
+            font=ctk.CTkFont(size=11, weight="bold"),
             text_color=self.cores['text_primary']
-        ).pack(pady=6)  # Reduzir de 10 para 6
+        ).pack(pady=6)
         
         # Container para tipos - mais compacto
         tipos_container = ctk.CTkFrame(tipo_frame, fg_color="transparent")
@@ -214,19 +217,19 @@ class TradutorCustomTkinterUX:
             )
             radio.pack(anchor="w", pady=(0, 2))  # Reduzir espaçamento
         
-        # Botão selecionar arquivo (responsivo) - mais compacto
+        # Botão selecionar arquivo - design mais sutil
         btn_selecionar = ctk.CTkButton(
             tipos_container,
             text="Selecionar Arquivo",
-            font=ctk.CTkFont(size=11, weight="bold"),  # Reduzir de 14 para 11
-            height=30,  # Reduzir de 38 para 30
-            corner_radius=6,  # Reduzir de 8 para 6
+            font=ctk.CTkFont(size=11, weight="bold"),
+            height=30,
+            corner_radius=6,
             fg_color=self.cores['accent'],
             hover_color=self.cores['accent_hover'],
             text_color=self.cores['text_primary'],
             command=self.selecionar_arquivo
         )
-        btn_selecionar.pack(fill="x", pady=(6, 0))  # Reduzir espaçamento
+        btn_selecionar.pack(fill="x", pady=(6, 0))
     
     def criar_selecao_idiomas(self, parent):
         """Cria a seleção de idiomas com layout organizado - versão compacta"""
@@ -237,10 +240,10 @@ class TradutorCustomTkinterUX:
         # Título do frame - mais compacto
         ctk.CTkLabel(
             idiomas_frame,
-            text="🌍 Idiomas",
-            font=ctk.CTkFont(size=11, weight="bold"),  # Reduzir de 14 para 11
+            text="Idiomas",
+            font=ctk.CTkFont(size=11, weight="bold"),
             text_color=self.cores['text_primary']
-        ).pack(pady=8)  # Reduzir de 12 para 8
+        ).pack(pady=8)
         
         # Container para os idiomas - mais compacto
         idiomas_container = ctk.CTkFrame(idiomas_frame, fg_color="transparent")
@@ -314,10 +317,10 @@ class TradutorCustomTkinterUX:
         # Título do frame - mais compacto
         ctk.CTkLabel(
             config_frame,
-            text="🔧 Configurações Avançadas",
-            font=ctk.CTkFont(size=11, weight="bold"),  # Reduzir de 14 para 11
+            text="Configurações Avançadas",
+            font=ctk.CTkFont(size=11, weight="bold"),
             text_color=self.cores['text_primary']
-        ).pack(pady=8)  # Reduzir de 12 para 8
+        ).pack(pady=8)
         
         # Container para configurações - mais compacto
         config_container = ctk.CTkFrame(config_frame, fg_color="transparent")
@@ -408,15 +411,15 @@ class TradutorCustomTkinterUX:
         botoes_frame = ctk.CTkFrame(parent, fg_color="transparent")
         botoes_frame.pack(fill="x", pady=(0, 10))  # Reduzir espaçamento
         
-        # Botão salvar configurações - mais compacto
+        # Botão salvar configurações - design mais sutil
         btn_salvar = ctk.CTkButton(
             botoes_frame,
             text="Salvar Configurações",
-            font=ctk.CTkFont(size=9),  # Reduzir de 11 para 9
-            height=28,  # Reduzir de 36 para 28
-            corner_radius=5,  # Reduzir de 6 para 5
-            fg_color=self.cores['glass'],
-            hover_color=self.cores['secondary_hover'],
+            font=ctk.CTkFont(size=9),
+            height=28,
+            corner_radius=5,
+            fg_color=self.cores['accent'],
+            hover_color=self.cores['accent_hover'],
             text_color=self.cores['text_primary'],
             command=self.salvar_configuracoes
         )
@@ -447,7 +450,7 @@ class TradutorCustomTkinterUX:
         # Título do card - mais compacto
         ctk.CTkLabel(
             card_frame,
-            text="🎯 Seleção de Colunas para Traduzir",
+            text="Seleção de Colunas para Traduzir",
             font=ctk.CTkFont(size=14, weight="bold"),
             text_color=self.cores['text_primary']
         ).pack(pady=(10, 8))
@@ -474,7 +477,7 @@ class TradutorCustomTkinterUX:
         # Placeholder para as colunas (será preenchido quando carregar dataset)
         self.label_colunas_placeholder = ctk.CTkLabel(
             self.colunas_container_horizontal,
-            text="📁 Carregue um dataset para ver as colunas disponíveis",
+            text="Carregue um dataset para ver as colunas disponíveis",
             font=ctk.CTkFont(size=11),
             text_color=self.cores['text_muted']
         )
@@ -484,10 +487,10 @@ class TradutorCustomTkinterUX:
         btn_frame = ctk.CTkFrame(colunas_container, fg_color="transparent")
         btn_frame.pack(fill="x", pady=(8, 0))
         
-        # Botão iniciar tradução - mais compacto
+        # Botão iniciar tradução - design mais sutil
         self.btn_iniciar = ctk.CTkButton(
             btn_frame,
-            text="🚀 Iniciar Tradução",
+            text="Iniciar Tradução",
             font=ctk.CTkFont(size=12, weight="bold"),
             height=32,
             corner_radius=6,
@@ -498,10 +501,10 @@ class TradutorCustomTkinterUX:
         )
         self.btn_iniciar.pack(side="left", padx=(0, 6), fill="x", expand=True)
         
-        # Botão parar tradução - mais compacto
+        # Botão parar tradução - design mais sutil
         self.btn_parar = ctk.CTkButton(
             btn_frame,
-            text="⏹️ Parar Tradução",
+            text="Parar Tradução",
             font=ctk.CTkFont(size=12, weight="bold"),
             height=32,
             corner_radius=6,
@@ -534,8 +537,8 @@ class TradutorCustomTkinterUX:
         
         ctk.CTkLabel(
             info_frame,
-            text="📊 Preview dos Dados",
-            font=ctk.CTkFont(size=13, weight="bold"),  # Fonte menor
+            text="Preview dos Dados",
+            font=ctk.CTkFont(size=13, weight="bold"),
             text_color=self.cores['text_primary']
         ).pack(anchor="w")
         
@@ -650,11 +653,11 @@ class TradutorCustomTkinterUX:
         # Título da sidebar - mais compacto
         sidebar_title = ctk.CTkLabel(
             sidebar_frame,
-            text="📝 Log de Atividades",
-            font=ctk.CTkFont(size=13, weight="bold"),  # Reduzir de 16 para 13
+            text="Log de Atividades",
+            font=ctk.CTkFont(size=13, weight="bold"),
             text_color=self.cores['text_primary']
         )
-        sidebar_title.pack(pady=8)  # Reduzir de 12 para 8
+        sidebar_title.pack(pady=8)
         
         # Container para logs - mais compacto
         log_container = ctk.CTkScrollableFrame(
@@ -674,10 +677,10 @@ class TradutorCustomTkinterUX:
         # Título do frame - mais compacto
         ctk.CTkLabel(
             log_frame,
-            text="📋 Histórico de Atividades",
-            font=ctk.CTkFont(size=11, weight="bold"),  # Reduzir de 14 para 11
+            text="Histórico de Atividades",
+            font=ctk.CTkFont(size=11, weight="bold"),
             text_color=self.cores['text_primary']
-        ).pack(pady=8)  # Reduzir de 12 para 8
+        ).pack(pady=8)
         
         # Textbox para log - altura proporcional
         self.textbox_log = ctk.CTkTextbox(
@@ -688,19 +691,19 @@ class TradutorCustomTkinterUX:
         )
         self.textbox_log.pack(fill="both", expand=True, padx=12, pady=(0, 12))  # Reduzir padding
         
-        # Botão limpar log (centralizado) - mais compacto
+        # Botão limpar log - design mais sutil
         btn_limpar = ctk.CTkButton(
             log_frame,
             text="Limpar Log",
-            font=ctk.CTkFont(size=9),  # Reduzir de 11 para 9
-            height=28,  # Reduzir de 36 para 28
-            corner_radius=5,  # Reduzir de 6 para 5
-            fg_color=self.cores['glass'],
-            hover_color=self.cores['secondary_hover'],
+            font=ctk.CTkFont(size=9),
+            height=28,
+            corner_radius=5,
+            fg_color=self.cores['accent'],
+            hover_color=self.cores['accent_hover'],
             text_color=self.cores['text_primary'],
             command=self.limpar_log
         )
-        btn_limpar.pack(pady=(0, 12))  # Reduzir espaçamento
+        btn_limpar.pack(pady=(0, 12))
         
         # Separador visual
         separator = ctk.CTkFrame(log_frame, height=1, fg_color=self.cores['border'])
@@ -709,16 +712,16 @@ class TradutorCustomTkinterUX:
         # Botões de exportação - mais compactos
         export_label = ctk.CTkLabel(
             log_frame,
-            text="💾 Exportar Dataset:",
+            text="Exportar Dataset:",
             font=ctk.CTkFont(size=9, weight="bold"),
             text_color=self.cores['text_primary']
         )
         export_label.pack(anchor="w", pady=(0, 6))
         
-        # Botão exportar CSV
+        # Botão exportar CSV - design mais sutil
         btn_csv = ctk.CTkButton(
             log_frame,
-            text="📊 Exportar CSV",
+            text="Exportar CSV",
             font=ctk.CTkFont(size=9),
             height=26,
             corner_radius=5,
@@ -729,10 +732,10 @@ class TradutorCustomTkinterUX:
         )
         btn_csv.pack(fill="x", pady=(0, 4))
         
-        # Botão exportar Excel
+        # Botão exportar Excel - design mais sutil
         btn_excel = ctk.CTkButton(
             log_frame,
-            text="📈 Exportar Excel",
+            text="Exportar Excel",
             font=ctk.CTkFont(size=9),
             height=26,
             corner_radius=5,
@@ -999,7 +1002,7 @@ class TradutorCustomTkinterUX:
             dialog.wait_window()
             return escolha["tabela"]
         except Exception as exc:
-            messagebox.showerror("Erro", f"Falha ao listar tabelas: {exc}")
+            self.mostrar_dialogo_personalizado("Erro", f"Falha ao listar tabelas: {exc}", "error")
             return None
 
     def carregar_arquivo(self, filename: str, tipo: str):
@@ -1035,7 +1038,7 @@ class TradutorCustomTkinterUX:
                 finally:
                     conn.close()
             else:
-                messagebox.showwarning("Aviso", f"Tipo de arquivo não suportado: {tipo}")
+                self.mostrar_dialogo_personalizado("Aviso", f"Tipo de arquivo não suportado: {tipo}", "warning")
                 return
 
             # Atualizar interface com preview
@@ -1242,7 +1245,7 @@ class TradutorCustomTkinterUX:
             return
             
         if self.traducao_ativa:
-            messagebox.showinfo("Info", "Tradução já está em andamento.")
+            self.mostrar_dialogo_personalizado("Info", "Tradução já está em andamento.", "info")
             return
             
         # Obter colunas selecionadas dos checkboxes
@@ -1252,16 +1255,29 @@ class TradutorCustomTkinterUX:
                 colunas_selecionadas.append(col)
         
         if not colunas_selecionadas:
-            messagebox.showwarning("Aviso", "Selecione pelo menos uma coluna para traduzir.")
+            self.mostrar_dialogo_personalizado("Aviso", "Selecione pelo menos uma coluna para traduzir.", "warning")
             return
             
-        # Confirmar início da tradução
-        mensagem_confirmacao = f"Iniciar tradução?\n\nArquivo: {os.path.basename(self.df_full_path)}\nTipo: {self.df_tipo}\nColunas: {len(colunas_selecionadas)}\nIdioma: {self.combo_idioma_origem.get()} → {self.combo_idioma_destino.get()}\n\n⚠️ O arquivo será processado em lotes pequenos para economizar memória.\n💡 Use o botão 'Parar Tradução' a qualquer momento para interromper."
+        # Confirmar início da tradução - mensagem compacta
+        mensagem_confirmacao = f"Arquivo: {os.path.basename(self.df_full_path)}\nColunas: {len(colunas_selecionadas)}\nIdioma: {self.combo_idioma_origem.get()} → {self.combo_idioma_destino.get()}\n\nProcessar em lotes e salvar incrementalmente?"
         
-        resposta = self.mostrar_confirmacao_personalizada("Confirmar Tradução", mensagem_confirmacao)
+        # Mostrar diálogo de confirmação personalizado
+        resposta = self.mostrar_confirmacao_personalizada("Tradução", mensagem_confirmacao)
         
         if not resposta:
             return
+            
+        # Selecionar pasta para salvar o arquivo traduzido
+        pasta_destino = self.selecionar_pasta_destino()
+        if not pasta_destino:
+            return
+            
+        # Definir caminho do arquivo de saída
+        nome_arquivo_original = os.path.splitext(os.path.basename(self.df_full_path))[0]
+        self.arquivo_saida = os.path.join(pasta_destino, f"{nome_arquivo_original}_traduzido.csv")
+        
+        # Log da seleção
+        self.log_atividade(f"Arquivo de saída selecionado: {self.arquivo_saida}")
             
         # Iniciar tradução em thread separada
         self.traducao_ativa = True
@@ -1310,12 +1326,22 @@ class TradutorCustomTkinterUX:
         except Exception as e:
             self.progress_queue.put(("erro", f"Erro na tradução: {str(e)}"))
         finally:
+            # Só marcar como concluída se não foi parada pelo usuário
+            if self.traducao_ativa:
+                self.progress_queue.put(("concluido", "Tradução concluída"))
+            else:
+                self.progress_queue.put(("parada", "Tradução interrompida pelo usuário"))
+            
             self.traducao_ativa = False
-            self.progress_queue.put(("concluido", "Tradução concluída"))
     
     def _traduzir_csv_lotes(self, colunas_selecionadas, tradutor, tamanho_lote, delay):
-        """Traduz CSV em lotes para economizar memória"""
+        """Traduz CSV em lotes para economizar memória e salva incrementalmente"""
         try:
+            # Verificar se deve parar antes de começar
+            if not self.traducao_ativa:
+                self.log_atividade("Tradução interrompida pelo usuário")
+                return
+                
             # Contar total de linhas
             total_linhas = sum(1 for _ in open(self.df_full_path, 'r', encoding='utf-8')) - 1  # -1 para header
             
@@ -1324,11 +1350,16 @@ class TradutorCustomTkinterUX:
                 # Verificar se deve parar a cada lote
                 if not self.traducao_ativa:
                     self.log_atividade("Tradução interrompida pelo usuário")
-                    break
+                    return  # Retornar imediatamente, não apenas break
                     
                 # Ler lote
                 df_lote = pd.read_csv(self.df_full_path, skiprows=i+1, nrows=tamanho_lote, header=None)
                 df_lote.columns = self.colunas_originais
+                
+                # Verificar se deve parar ANTES de traduzir
+                if not self.traducao_ativa:
+                    self.log_atividade("Tradução interrompida pelo usuário")
+                    return
                 
                 # Traduzir colunas selecionadas
                 for col in colunas_selecionadas:
@@ -1337,15 +1368,20 @@ class TradutorCustomTkinterUX:
                             lambda x: tradutor.translate(str(x)) if pd.notna(x) else x
                         )
                 
-                # Salvar lote traduzido
-                # TODO: Implementar salvamento em arquivo temporário ou banco
+                # Verificar se deve parar ANTES de salvar
+                if not self.traducao_ativa:
+                    self.log_atividade("Tradução interrompida pelo usuário")
+                    return
+                
+                # Salvar lote traduzido incrementalmente
+                self._salvar_lote_csv(df_lote, i == 0)  # i == 0 significa primeiro lote
                 
                 # Atualizar progresso
                 progresso = min(100, (i + tamanho_lote) / total_linhas * 100)
                 self.progress_queue.put(("progresso", progresso))
                 
                 # Log de progresso
-                self.log_atividade(f"Lote processado: {i+1}-{min(i+tamanho_lote, total_linhas)} de {total_linhas} linhas")
+                self.log_atividade(f"Lote processado e salvo: {i+1}-{min(i+tamanho_lote, total_linhas)} de {total_linhas} linhas")
                 
                 # Delay para não sobrecarregar API
                 time.sleep(delay)
@@ -1356,9 +1392,74 @@ class TradutorCustomTkinterUX:
         except Exception as e:
             self.progress_queue.put(("erro", f"Erro ao traduzir CSV: {str(e)}"))
     
+    def _criar_arquivo_saida_csv(self, colunas_selecionadas):
+        """Cria o arquivo de saída CSV com cabeçalho"""
+        try:
+            # Ler primeira linha para obter cabeçalho original
+            df_header = pd.read_csv(self.df_full_path, nrows=0)
+            colunas_originais = df_header.columns.tolist()
+            
+            # Criar lista de colunas para o arquivo de saída
+            colunas_saida = []
+            for col in colunas_originais:
+                colunas_saida.append(col)  # Coluna original
+                if col in colunas_selecionadas:
+                    colunas_saida.append(f"{col}_traduzido")  # Coluna traduzida
+            
+            # Criar arquivo com cabeçalho
+            with open(self.arquivo_saida, 'w', newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                writer.writerow(colunas_saida)
+            
+            self.log_atividade(f"Arquivo de saída criado: {self.arquivo_saida}")
+            
+        except Exception as e:
+            self.log_atividade(f"Erro ao criar arquivo de saída: {str(e)}")
+            raise
+    
+    def _salvar_lote_csv(self, df_lote, primeiro_lote=False):
+        """Salva um lote de dados traduzidos no arquivo CSV"""
+        try:
+            # Preparar dados para salvar
+            dados_para_salvar = []
+            for _, row in df_lote.iterrows():
+                linha = []
+                for col in self.colunas_originais:
+                    linha.append(row[col])  # Valor original
+                    if col in [col for col in self.colunas_originais if f"{col}_traduzido" in df_lote.columns]:
+                        linha.append(row[f"{col}_traduzido"])  # Valor traduzido
+                dados_para_salvar.append(linha)
+            
+            # Salvar no arquivo (append se não for primeiro lote)
+            mode = 'a' if not primeiro_lote else 'w'
+            with open(self.arquivo_saida, mode, newline='', encoding='utf-8') as f:
+                writer = csv.writer(f)
+                if primeiro_lote:
+                    # Escrever cabeçalho no primeiro lote
+                    colunas_saida = []
+                    for col in self.colunas_originais:
+                        colunas_saida.append(col)
+                        if col in [col for col in self.colunas_originais if f"{col}_traduzido" in df_lote.columns]:
+                            colunas_saida.append(f"{col}_traduzido")
+                    writer.writerow(colunas_saida)
+                    
+                    self.log_atividade(f"Arquivo de saída criado: {self.arquivo_saida}")
+                
+                # Escrever dados
+                writer.writerows(dados_para_salvar)
+            
+        except Exception as e:
+            self.log_atividade(f"Erro ao salvar lote: {str(e)}")
+            raise
+    
     def _traduzir_excel_lotes(self, colunas_selecionadas, tradutor, tamanho_lote, delay):
         """Traduz Excel em lotes para economizar memória"""
         try:
+            # Verificar se deve parar antes de começar
+            if not self.traducao_ativa:
+                self.log_atividade("Tradução interrompida pelo usuário")
+                return
+                
             # Para Excel, usar openpyxl para leitura em lotes
             from openpyxl import load_workbook
             
@@ -1373,7 +1474,7 @@ class TradutorCustomTkinterUX:
                 # Verificar se deve parar a cada lote
                 if not self.traducao_ativa:
                     self.log_atividade("Tradução interrompida pelo usuário")
-                    break
+                    return  # Retornar imediatamente
                     
                 # Ler lote
                 dados_lote = []
@@ -1382,6 +1483,11 @@ class TradutorCustomTkinterUX:
                     dados_lote.append(row_data)
                 
                 df_lote = pd.DataFrame(dados_lote, columns=self.colunas_originais)
+                
+                # Verificar se deve parar ANTES de traduzir
+                if not self.traducao_ativa:
+                    self.log_atividade("Tradução interrompida pelo usuário")
+                    return
                 
                 # Traduzir colunas selecionadas
                 for col in colunas_selecionadas:
@@ -1411,6 +1517,11 @@ class TradutorCustomTkinterUX:
     def _traduzir_sqlite_lotes(self, colunas_selecionadas, tradutor, tamanho_lote, delay):
         """Traduz SQLite em lotes para economizar memória"""
         try:
+            # Verificar se deve parar antes de começar
+            if not self.traducao_ativa:
+                self.log_atividade("Tradução interrompida pelo usuário")
+                return
+                
             conn = sqlite3.connect(self.df_full_path)
             
             # Contar total de linhas
@@ -1423,11 +1534,16 @@ class TradutorCustomTkinterUX:
                 # Verificar se deve parar a cada lote
                 if not self.traducao_ativa:
                     self.log_atividade("Tradução interrompida pelo usuário")
-                    break
+                    return  # Retornar imediatamente
                     
                 # Ler lote
                 query = f"SELECT * FROM {self.df_tabela} LIMIT {tamanho_lote} OFFSET {i}"
                 df_lote = pd.read_sql_query(query, conn)
+                
+                # Verificar se deve parar ANTES de traduzir
+                if not self.traducao_ativa:
+                    self.log_atividade("Tradução interrompida pelo usuário")
+                    return
                 
                 # Traduzir colunas selecionadas
                 for col in colunas_selecionadas:
@@ -1457,23 +1573,26 @@ class TradutorCustomTkinterUX:
     def parar_traducao(self):
         """Para a tradução em andamento"""
         if not self.traducao_ativa:
-            messagebox.showinfo("Info", "Nenhuma tradução em andamento.")
+            self.mostrar_dialogo_personalizado("Info", "Nenhuma tradução em andamento.", "info")
             return
             
-        resposta = self.mostrar_confirmacao_personalizada("Confirmar Parada", "Deseja realmente parar a tradução?")
+        # Mostrar diálogo de confirmação personalizado
+        resposta = self.mostrar_confirmacao_personalizada("Confirmar Parada", "Parar a tradução em andamento?")
         if resposta:
             # Sinalizar para parar a thread
             self.traducao_ativa = False
+            
+            # Enviar mensagem de parada para a fila de progresso
+            self.progress_queue.put(("parada", "Tradução interrompida pelo usuário"))
             
             # Aguardar a thread terminar (com timeout para não travar)
             if self.thread_traducao and self.thread_traducao.is_alive():
                 self.thread_traducao.join(timeout=2.0)
             
-            # Atualizar interface
+            # Atualizar interface imediatamente
             self.btn_iniciar.configure(state="normal")
             self.btn_parar.configure(state="disabled")
             self.label_status_bar.configure(text="⏹️ Tradução parada")
-            self.log_atividade("Tradução parada pelo usuário")
             
             # Resetar progresso
             self.progress_bar.set(0)
@@ -1481,8 +1600,12 @@ class TradutorCustomTkinterUX:
     
     def exportar_resultado(self, formato):
         """Exporta o resultado da tradução"""
-        if not hasattr(self, 'df_full_path') or not self.df_full_path:
-            messagebox.showwarning("Aviso", "Nenhum dataset carregado para exportar.")
+        if not hasattr(self, 'arquivo_saida') or not self.arquivo_saida:
+            self.mostrar_dialogo_personalizado("Aviso", "Nenhum arquivo traduzido disponível para exportar.\n\nExecute uma tradução primeiro.", "warning")
+            return
+            
+        if not os.path.exists(self.arquivo_saida):
+            self.mostrar_dialogo_personalizado("Aviso", "Arquivo traduzido não encontrado.\n\nExecute uma tradução primeiro.", "warning")
             return
             
         # Solicitar local de salvamento
@@ -1500,18 +1623,26 @@ class TradutorCustomTkinterUX:
             return
             
         try:
-            # TODO: Implementar exportação do resultado traduzido
-            # Por enquanto, apenas mostrar mensagem
-            messagebox.showinfo(
-                "Exportação", 
-                f"Funcionalidade de exportação será implementada em breve.\n"
-                f"Formato selecionado: {formato}\n"
-                f"Local: {filename}"
-            )
-            self.log_atividade(f"Exportação solicitada: {formato} -> {filename}")
+            if formato == "CSV":
+                # Copiar arquivo CSV já traduzido
+                import shutil
+                shutil.copy2(self.arquivo_saida, filename)
+                mensagem = f"Arquivo CSV traduzido copiado para:\n{filename}"
+                
+            elif formato == "Excel":
+                # Converter CSV para Excel
+                df_traduzido = pd.read_csv(self.arquivo_saida)
+                df_traduzido.to_excel(filename, index=False)
+                mensagem = f"Arquivo convertido para Excel:\n{filename}"
+                
+            else:
+                mensagem = f"Formato {formato} não suportado ainda"
+                
+            self.mostrar_dialogo_personalizado("Sucesso", mensagem, "info")
+            self.log_atividade(f"Exportação concluída: {formato} -> {filename}")
             
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao exportar: {str(e)}")
+            self.mostrar_dialogo_personalizado("Erro", f"Erro ao exportar: {str(e)}", "error")
             self.log_atividade(f"ERRO na exportação: {str(e)}")
     
     def salvar_configuracoes(self):
@@ -1527,11 +1658,11 @@ class TradutorCustomTkinterUX:
             with open(config_file, 'w', encoding='utf-8') as f:
                 json.dump(self.config, f, indent=2, ensure_ascii=False)
             
-            messagebox.showinfo("Sucesso", "Configurações salvas com sucesso!")
+            self.mostrar_dialogo_personalizado("Sucesso", "Configurações salvas com sucesso!", "info")
             self.log_atividade("Configurações salvas")
             
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao salvar configurações: {str(e)}")
+            self.mostrar_dialogo_personalizado("Erro", f"Erro ao salvar configurações: {str(e)}", "error")
             self.log_atividade(f"ERRO ao salvar configurações: {str(e)}")
     
     def limpar_log(self):
@@ -1568,10 +1699,22 @@ class TradutorCustomTkinterUX:
                     self.btn_parar.configure(state="disabled")
                     self.label_status_bar.configure(text="❌ Erro na tradução")
                     
+                elif tipo == "parada":
+                    # Tradução parada pelo usuário
+                    self.log_atividade("Tradução interrompida pelo usuário")
+                    self.traducao_ativa = False
+                    self.btn_iniciar.configure(state="normal")
+                    self.btn_parar.configure(state="disabled")
+                    self.label_status_bar.configure(text="⏹️ Tradução parada")
+                    self.progress_bar.set(0)
+                    self.label_progress.configure(text="0%")
+                    
                 elif tipo == "concluido":
                     # Tradução concluída
-                    self.mostrar_dialogo_personalizado("Sucesso", "Tradução concluída com sucesso!", "info")
+                    mensagem_sucesso = f"Tradução concluída!\n\nArquivo: {os.path.basename(self.arquivo_saida)}"
+                    self.mostrar_dialogo_personalizado("Sucesso", mensagem_sucesso, "info")
                     self.log_atividade("Tradução concluída")
+                    self.log_atividade(f"Arquivo final salvo: {self.arquivo_saida}")
                     self.traducao_ativa = False
                     self.btn_iniciar.configure(state="normal")
                     self.btn_parar.configure(state="disabled")
@@ -1593,87 +1736,86 @@ class TradutorCustomTkinterUX:
 
     def mostrar_dialogo_personalizado(self, titulo, mensagem, tipo="info"):
         """Mostra um diálogo personalizado que combina com o tema da aplicação"""
-        # Criar janela de diálogo
+        # Criar janela de diálogo com tamanho otimizado
         dialog = ctk.CTkToplevel(self.root)
         dialog.title(titulo)
-        dialog.geometry("450x300")
+        dialog.geometry("420x280")
         dialog.transient(self.root)
-        dialog.grab_set()
         dialog.resizable(False, False)
         
         # Centralizar diálogo
         dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (450 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (300 // 2)
-        dialog.geometry(f"450x300+{x}+{y}")
+        x = (dialog.winfo_screenwidth() // 2) - (420 // 2)
+        y = (dialog.winfo_screenheight() // 2) - (280 // 2)
+        dialog.geometry(f"420x280+{x}+{y}")
         
-        # Configurar cores baseado no tipo
+        # Configurar cores baseado no tipo - Design mais sutil
         if tipo == "info":
             cor_primaria = self.cores['accent']
             cor_secundaria = self.cores['accent_hover']
-            icone = "✅"
+            icone = "i"
         elif tipo == "warning":
             cor_primaria = self.cores['warning']
             cor_secundaria = self.cores['warning_hover']
-            icone = "⚠️"
+            icone = "!"
         elif tipo == "error":
             cor_primaria = self.cores['danger']
             cor_secundaria = self.cores['danger_hover']
-            icone = "❌"
+            icone = "x"
         else:
             cor_primaria = self.cores['accent']
             cor_secundaria = self.cores['accent_hover']
-            icone = "ℹ️"
+            icone = "i"
         
-        # Frame principal
-        main_frame = ctk.CTkFrame(dialog, fg_color=self.cores['secondary'], corner_radius=15)
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        # Frame principal compacto
+        main_frame = ctk.CTkFrame(dialog, fg_color=self.cores['secondary'], corner_radius=12)
+        main_frame.pack(fill="both", expand=True, padx=16, pady=16)
         
-        # Header com ícone e título
+        # Header compacto com ícone e título
         header_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        header_frame.pack(fill="x", pady=(20, 15))
+        header_frame.pack(fill="x", pady=(12, 8))
         
-        # Ícone
+        # Ícone pequeno e discreto
         icon_label = ctk.CTkLabel(
             header_frame,
             text=icone,
-            font=ctk.CTkFont(size=32),
+            font=ctk.CTkFont(size=20),
             text_color=cor_primaria
         )
         icon_label.pack()
         
-        # Título
+        # Título compacto
         title_label = ctk.CTkLabel(
             header_frame,
             text=titulo,
-            font=ctk.CTkFont(size=18, weight="bold"),
+            font=ctk.CTkFont(size=14, weight="bold"),
             text_color=self.cores['text_primary']
         )
-        title_label.pack(pady=(10, 0))
+        title_label.pack(pady=(6, 0))
         
-        # Mensagem
+        # Mensagem compacta
         message_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        message_frame.pack(fill="x", padx=20, pady=(0, 20))
+        message_frame.pack(fill="x", padx=16, pady=(0, 12))
         
         message_label = ctk.CTkLabel(
             message_frame,
             text=mensagem,
-            font=ctk.CTkFont(size=13),
+            font=ctk.CTkFont(size=11),
             text_color=self.cores['text_secondary'],
-            wraplength=380,
+            wraplength=320,
             justify="center"
         )
         message_label.pack()
         
-        # Botão OK
+        # Botão OK com design melhorado
         btn_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        btn_frame.pack(fill="x", pady=(0, 20))
+        btn_frame.pack(fill="x", pady=(0, 16))
         
         btn_ok = ctk.CTkButton(
             btn_frame,
             text="OK",
-            font=ctk.CTkFont(size=14, weight="bold"),
-            height=36,
+            font=ctk.CTkFont(size=13, weight="bold"),
+            height=32,
             corner_radius=8,
             fg_color=cor_primaria,
             hover_color=cor_secundaria,
@@ -1693,6 +1835,9 @@ class TradutorCustomTkinterUX:
         dialog.lift()
         dialog.focus_force()
         
+        # Definir como modal após estar visível
+        dialog.grab_set()
+        
         return dialog
 
     def mostrar_confirmacao_personalizada(self, titulo, mensagem):
@@ -1700,71 +1845,70 @@ class TradutorCustomTkinterUX:
         # Variável para armazenar a resposta
         resposta = {"resultado": False}
         
-        # Criar janela de diálogo
+        # Criar janela de diálogo com tamanho otimizado
         dialog = ctk.CTkToplevel(self.root)
         dialog.title(titulo)
-        dialog.geometry("500x250")
+        dialog.geometry("420x280")
         dialog.transient(self.root)
-        dialog.grab_set()
         dialog.resizable(False, False)
         
         # Centralizar diálogo
         dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (500 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (250 // 2)
-        dialog.geometry(f"500x250+{x}+{y}")
+        x = (dialog.winfo_screenwidth() // 2) - (420 // 2)
+        y = (dialog.winfo_screenheight() // 2) - (280 // 2)
+        dialog.geometry(f"420x280+{x}+{y}")
         
-        # Frame principal
-        main_frame = ctk.CTkFrame(dialog, fg_color=self.cores['secondary'], corner_radius=15)
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        # Frame principal compacto
+        main_frame = ctk.CTkFrame(dialog, fg_color=self.cores['secondary'], corner_radius=12)
+        main_frame.pack(fill="both", expand=True, padx=16, pady=16)
         
-        # Header com ícone e título
+        # Header compacto com ícone e título
         header_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        header_frame.pack(fill="x", pady=(15, 10))
+        header_frame.pack(fill="x", pady=(12, 8))
         
-        # Ícone de confirmação
+        # Ícone pequeno e discreto
         icon_label = ctk.CTkLabel(
             header_frame,
-            text="❓",
-            font=ctk.CTkFont(size=28),
+            text="?",
+            font=ctk.CTkFont(size=20),
             text_color=self.cores['accent']
         )
         icon_label.pack()
         
-        # Título
+        # Título compacto
         title_label = ctk.CTkLabel(
             header_frame,
             text=titulo,
-            font=ctk.CTkFont(size=16, weight="bold"),
+            font=ctk.CTkFont(size=14, weight="bold"),
             text_color=self.cores['text_primary']
         )
-        title_label.pack(pady=(8, 0))
+        title_label.pack(pady=(6, 0))
         
-        # Mensagem
+        # Mensagem compacta
         message_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        message_frame.pack(fill="x", padx=20, pady=(0, 15))
+        message_frame.pack(fill="x", padx=16, pady=(0, 12))
         
         message_label = ctk.CTkLabel(
             message_frame,
             text=mensagem,
-            font=ctk.CTkFont(size=12),
+            font=ctk.CTkFont(size=11),
             text_color=self.cores['text_secondary'],
-            wraplength=420,
+            wraplength=320,
             justify="center"
         )
         message_label.pack()
         
-        # Botões (Sim/Não)
+        # Botões com design melhorado
         btn_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        btn_frame.pack(fill="x", pady=(0, 15))
+        btn_frame.pack(fill="x", pady=(0, 16))
         
-        # Botão Sim
+        # Botão Sim com design mais sutil
         btn_sim = ctk.CTkButton(
             btn_frame,
             text="Sim",
             font=ctk.CTkFont(size=13, weight="bold"),
             height=32,
-            corner_radius=6,
+            corner_radius=8,
             fg_color=self.cores['accent'],
             hover_color=self.cores['accent_hover'],
             text_color=self.cores['text_primary'],
@@ -1772,13 +1916,13 @@ class TradutorCustomTkinterUX:
         )
         btn_sim.pack(side="left", padx=(0, 8), fill="x", expand=True)
         
-        # Botão Não
+        # Botão Não com design mais sutil
         btn_nao = ctk.CTkButton(
             btn_frame,
             text="Não",
             font=ctk.CTkFont(size=13, weight="bold"),
             height=32,
-            corner_radius=6,
+            corner_radius=8,
             fg_color=self.cores['glass'],
             hover_color=self.cores['secondary_hover'],
             text_color=self.cores['text_primary'],
@@ -1793,9 +1937,13 @@ class TradutorCustomTkinterUX:
         dialog.bind("<Return>", lambda e: self._confirmar_dialogo(dialog, resposta, True))
         dialog.bind("<Escape>", lambda e: self._confirmar_dialogo(dialog, resposta, False))
         
-        # Centralizar na tela
+        # Centralizar na tela e forçar atualização
         dialog.lift()
         dialog.focus_force()
+        dialog.update()
+        
+        # AGORA sim, definir como modal (após estar visível)
+        dialog.grab_set()
         
         # Aguardar resposta
         dialog.wait_window()
@@ -1805,7 +1953,26 @@ class TradutorCustomTkinterUX:
     def _confirmar_dialogo(self, dialog, resposta, valor):
         """Método auxiliar para confirmar diálogo"""
         resposta["resultado"] = valor
+        self.log_atividade(f"Diálogo confirmado: {'Sim' if valor else 'Não'}")
         dialog.destroy()
+    
+    def selecionar_pasta_destino(self):
+        """Permite ao usuário selecionar onde salvar o arquivo traduzido"""
+        from tkinter import filedialog
+        
+        pasta = filedialog.askdirectory(
+            title="Selecionar pasta para salvar arquivo traduzido",
+            initialdir=os.path.dirname(self.df_full_path) if self.df_full_path else os.path.expanduser("~")
+        )
+        
+        if pasta:
+            self.log_atividade(f"Pasta selecionada: {pasta}")
+            return pasta
+        else:
+            self.log_atividade("Nenhuma pasta selecionada - tradução cancelada")
+            return None
+    
+
 
 def main():
     """Função principal da aplicação"""
