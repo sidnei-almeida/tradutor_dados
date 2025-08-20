@@ -25,7 +25,11 @@ class TradutorCustomTkinterUX:
     def __init__(self):
         # Configurar aparência do CustomTkinter
         ctk.set_appearance_mode("dark")
-        # Não usar tema padrão para ter controle total das cores
+        # Desabilitar completamente o tema padrão para ter controle total das cores
+        # ctk.set_default_color_theme("blue")  # Comentado para usar apenas nossas cores
+        
+        # Desabilitar completamente o tema padrão do CustomTkinter
+        # ctk.set_default_color_theme("dark-blue")  # Comentado para usar apenas nossas cores
         
         # Criar janela principal
         self.root = ctk.CTk()
@@ -61,25 +65,25 @@ class TradutorCustomTkinterUX:
             'delay_traducao': 0.3  # Delay menor para melhor responsividade
         }
         
-        # Cores e estilos para efeitos visuais - Tema Minimalista Dark Elegante
+        # Cores e estilos para efeitos visuais - Tema Dark Elegante com Cores Vibrantes
         self.cores = {
-            'primary': '#e5e7eb',  # Cinza muito claro para elementos principais
-            'primary_hover': '#d1d5db',  # Cinza claro no hover
-            'secondary': '#1f2937',  # Cinza escuro para frames secundários
-            'secondary_hover': '#374151',  # Cinza médio no hover
-            'accent': '#4b5563',  # Cinza neutro para acentos
-            'accent_hover': '#6b7280',  # Cinza médio no hover
-            'warning': '#7f1d1d',  # Vermelho escuro e sutil
-            'warning_hover': '#991b1b',  # Vermelho médio no hover
-            'danger': '#7f1d1d',
-            'danger_hover': '#991b1b',
+            'primary': '#10b981',  # Verde vibrante para elementos principais
+            'primary_hover': '#059669',  # Verde escuro no hover
+            'secondary': '#1a202c',  # Cinza muito escuro para frames secundários
+            'secondary_hover': '#2d3748',  # Cinza escuro no hover
+            'accent': '#ef4444',  # Vermelho vibrante para acentos
+            'accent_hover': '#dc2626',  # Vermelho escuro no hover
+            'warning': '#f59e0b',  # Amarelo/laranja para avisos
+            'warning_hover': '#d97706',  # Amarelo escuro no hover
+            'danger': '#ef4444',  # Vermelho para perigo
+            'danger_hover': '#dc2626',  # Vermelho escuro no hover
             'transparent': 'transparent',
-            'semi_transparent': '#111827',  # Cinza muito escuro
-            'glass': '#1f2937',  # Cinza escuro para frames
+            'semi_transparent': '#0f1419',  # Cinza quase preto
+            'glass': '#1a202c',  # Cinza muito escuro para frames
             'text_primary': '#f9fafb',  # Texto principal cinza muito claro
-            'text_secondary': '#d1d5db',  # Texto secundário cinza claro
-            'text_muted': '#9ca3af',  # Texto mudo cinza médio
-            'border': '#374151'  # Bordas cinza médio
+            'text_secondary': '#cbd5e1',  # Texto secundário cinza neutro
+            'text_muted': '#94a3b8',  # Texto mudo cinza neutro
+            'border': '#2d3748'  # Bordas cinza escuro
         }
         
         # Criar interface
@@ -208,8 +212,8 @@ class TradutorCustomTkinterUX:
                 variable=self.tipo_arquivo,
                 value=value,
                 font=ctk.CTkFont(size=10),  # Reduzir de 12 para 10
-                fg_color=self.cores['accent'],
-                hover_color=self.cores['accent_hover'],
+                fg_color=self.cores['primary'],
+                hover_color=self.cores['primary_hover'],
                 radiobutton_width=14,  # Reduzir de 16 para 14
                 radiobutton_height=14,  # Reduzir de 16 para 14
                 text_color=self.cores['text_primary'],
@@ -224,8 +228,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=11, weight="bold"),
             height=30,
             corner_radius=6,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=self.selecionar_arquivo
         )
@@ -274,8 +278,8 @@ class TradutorCustomTkinterUX:
             height=26,  # Reduzir de 32 para 26
             corner_radius=5,  # Reduzir de 6 para 5
             fg_color=self.cores['glass'],
-            button_color=self.cores['accent'],
-            button_hover_color=self.cores['accent_hover'],
+            button_color=self.cores['primary'],
+            button_hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary']
         )
         self.combo_idioma_origem.set(idiomas['en'])
@@ -300,8 +304,8 @@ class TradutorCustomTkinterUX:
             height=26,  # Reduzir de 32 para 26
             corner_radius=5,  # Reduzir de 6 para 5
             fg_color=self.cores['glass'],
-            button_color=self.cores['accent'],
-            button_hover_color=self.cores['accent_hover'],
+            button_color=self.cores['primary'],
+            button_hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary']
         )
         self.combo_idioma_destino.set(idiomas['pt'])
@@ -345,7 +349,7 @@ class TradutorCustomTkinterUX:
             lote_header,
             text="15",
             font=ctk.CTkFont(size=10, weight="bold"),  # Reduzir de 13 para 10
-            text_color=self.cores['accent']
+            text_color=self.cores['primary']
         )
         self.label_lote.pack(side="right")
         
@@ -358,9 +362,9 @@ class TradutorCustomTkinterUX:
             height=14,  # Reduzir de 18 para 14
             corner_radius=6,  # Reduzir de 8 para 6
             fg_color=self.cores['glass'],
-            progress_color=self.cores['accent'],
-            button_color=self.cores['accent'],
-            button_hover_color=self.cores['accent_hover']
+            progress_color=self.cores['primary'],
+            button_color=self.cores['primary'],
+            button_hover_color=self.cores['primary_hover']
         )
         self.slider_lote.set(15)
         self.slider_lote.pack(fill="x", pady=(6, 0))  # Reduzir espaçamento
@@ -384,7 +388,7 @@ class TradutorCustomTkinterUX:
             delay_header,
             text="0.3s",
             font=ctk.CTkFont(size=10, weight="bold"),  # Reduzir de 13 para 10
-            text_color=self.cores['accent']
+            text_color=self.cores['primary']
         )
         self.label_delay.pack(side="right")
         
@@ -397,9 +401,9 @@ class TradutorCustomTkinterUX:
             height=14,  # Reduzir de 18 para 14
             corner_radius=6,  # Reduzir de 8 para 6
             fg_color=self.cores['glass'],
-            progress_color=self.cores['accent'],
-            button_color=self.cores['accent'],
-            button_hover_color=self.cores['accent_hover']
+            progress_color=self.cores['primary'],
+            button_color=self.cores['primary'],
+            button_hover_color=self.cores['primary_hover']
         )
         self.slider_delay.set(300)
         self.slider_delay.pack(fill="x", pady=(6, 0))  # Reduzir espaçamento
@@ -418,8 +422,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=9),
             height=28,
             corner_radius=5,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=self.salvar_configuracoes
         )
@@ -494,8 +498,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=12, weight="bold"),
             height=32,
             corner_radius=6,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=self.iniciar_traducao
         )
@@ -508,8 +512,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=12, weight="bold"),
             height=32,
             corner_radius=6,
-            fg_color=self.cores['warning'],
-            hover_color=self.cores['warning_hover'],
+            fg_color=self.cores['accent'],
+            hover_color=self.cores['accent_hover'],
             text_color=self.cores['text_primary'],
             command=self.parar_traducao,
             state="disabled"
@@ -588,7 +592,7 @@ class TradutorCustomTkinterUX:
         
         # Configurar estilo da tabela para tema escuro
         style = ttk.Style()
-        style.theme_use("default")
+        style.theme_use("clam")  # Tema mais neutro, sem cores azuladas
         style.configure(
             "Treeview",
             background=self.cores['glass'],
@@ -599,13 +603,13 @@ class TradutorCustomTkinterUX:
         )
         style.configure(
             "Treeview.Heading",
-            background=self.cores['accent'],
+            background=self.cores['primary'],
             foreground=self.cores['text_primary'],
             font=('Consolas', 9, 'bold')
         )
         style.map(
             "Treeview",
-            background=[('selected', self.cores['accent'])],
+            background=[('selected', self.cores['primary'])],
             foreground=[('selected', self.cores['text_primary'])]
         )
         
@@ -634,12 +638,12 @@ class TradutorCustomTkinterUX:
         # Adicionar efeitos hover para as barras de rolagem
         style.map(
             "Vertical.TScrollbar",
-            background=[('active', self.cores['accent']), ('pressed', self.cores['accent_hover'])],
+            background=[('active', self.cores['primary']), ('pressed', self.cores['primary_hover'])],
             troughcolor=[('active', self.cores['secondary_hover'])]
         )
         style.map(
             "Horizontal.TScrollbar",
-            background=[('active', self.cores['accent']), ('pressed', self.cores['accent_hover'])],
+            background=[('active', self.cores['primary']), ('pressed', self.cores['primary_hover'])],
             troughcolor=[('active', self.cores['secondary_hover'])]
         )
         
@@ -698,8 +702,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=9),
             height=28,
             corner_radius=5,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=self.limpar_log
         )
@@ -725,8 +729,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=9),
             height=26,
             corner_radius=5,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=lambda: self.exportar_resultado('CSV')
         )
@@ -739,8 +743,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=9),
             height=26,
             corner_radius=5,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=lambda: self.exportar_resultado('Excel')
         )
@@ -777,7 +781,7 @@ class TradutorCustomTkinterUX:
             width=100,  # Largura fixa para não ocupar muito espaço
             corner_radius=5,
             fg_color=self.cores['glass'],
-            progress_color=self.cores['accent']
+            progress_color=self.cores['primary']
         )
         self.progress_bar.pack(side="left", padx=(0, 5))
         self.progress_bar.set(0)
@@ -787,7 +791,7 @@ class TradutorCustomTkinterUX:
             progress_frame,
             text="0%",
             font=ctk.CTkFont(size=9),
-            text_color=self.cores['accent']
+            text_color=self.cores['primary']
         )
         self.label_progress.pack(side="left")
         
@@ -828,7 +832,7 @@ class TradutorCustomTkinterUX:
                 cor_original = widget.cget("fg_color")
             
             # Cor de destaque
-            cor_destaque = self.cores['accent']
+            cor_destaque = self.cores['warning']
             
             # Aplicar cor de destaque
             widget.configure(fg_color=cor_destaque)
@@ -968,7 +972,7 @@ class TradutorCustomTkinterUX:
                 dialog, 
                 text=f"Banco: {os.path.basename(filename)}\nTabelas encontradas: {len(tabelas)}",
                 font=ctk.CTkFont(size=12),
-                text_color="gray"
+                text_color=self.cores['text_muted']
             ).pack(pady=(0, 15))
 
             # Combo box para seleção
@@ -977,8 +981,8 @@ class TradutorCustomTkinterUX:
                 values=tabelas, 
                 width=300,
                 fg_color=self.cores['glass'],
-                button_color=self.cores['accent'],
-                button_hover_color=self.cores['accent_hover']
+                button_color=self.cores['primary'],
+                button_hover_color=self.cores['primary_hover']
             )
             combo.set(tabelas[0])
             combo.pack(pady=(0, 20))
@@ -995,8 +999,8 @@ class TradutorCustomTkinterUX:
                 text="Confirmar", 
                 command=confirmar,
                 width=120,
-                fg_color=self.cores['accent'],
-                hover_color=self.cores['accent_hover']
+                fg_color=self.cores['primary'],
+                hover_color=self.cores['primary_hover']
             ).pack()
             
             dialog.wait_window()
@@ -1158,8 +1162,8 @@ class TradutorCustomTkinterUX:
                         text=col,
                         font=ctk.CTkFont(size=10),  # Fonte menor
                         text_color=self.cores['text_primary'],
-                        fg_color=self.cores['accent'],
-                        hover_color=self.cores['accent_hover'],
+                        fg_color=self.cores['primary'],
+                        hover_color=self.cores['primary_hover'],
                         corner_radius=3,  # Bordas mais arredondadas
                         checkbox_width=14,  # Checkbox menor
                         checkbox_height=14
@@ -1751,8 +1755,8 @@ class TradutorCustomTkinterUX:
         
         # Configurar cores baseado no tipo - Design mais sutil
         if tipo == "info":
-            cor_primaria = self.cores['accent']
-            cor_secundaria = self.cores['accent_hover']
+            cor_primaria = self.cores['primary']
+            cor_secundaria = self.cores['primary_hover']
             icone = "i"
         elif tipo == "warning":
             cor_primaria = self.cores['warning']
@@ -1763,8 +1767,8 @@ class TradutorCustomTkinterUX:
             cor_secundaria = self.cores['danger_hover']
             icone = "x"
         else:
-            cor_primaria = self.cores['accent']
-            cor_secundaria = self.cores['accent_hover']
+            cor_primaria = self.cores['primary']
+            cor_secundaria = self.cores['primary_hover']
             icone = "i"
         
         # Frame principal compacto
@@ -1871,7 +1875,7 @@ class TradutorCustomTkinterUX:
             header_frame,
             text="?",
             font=ctk.CTkFont(size=20),
-            text_color=self.cores['accent']
+            text_color=self.cores['primary']
         )
         icon_label.pack()
         
@@ -1909,8 +1913,8 @@ class TradutorCustomTkinterUX:
             font=ctk.CTkFont(size=13, weight="bold"),
             height=32,
             corner_radius=8,
-            fg_color=self.cores['accent'],
-            hover_color=self.cores['accent_hover'],
+            fg_color=self.cores['primary'],
+            hover_color=self.cores['primary_hover'],
             text_color=self.cores['text_primary'],
             command=lambda: self._confirmar_dialogo(dialog, resposta, True)
         )
